@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>School Dashboard</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js" async defer></script>
+</head>
+<body>
+
+    <header class="app-header">
+        <div class="logo-area">
+            <div class="logo-icon"><i class="fa-solid fa-graduation-cap"></i></div>
+            <div>
+                <h1>School Dashboard</h1>
+                <p>今日も頑張りましょう！</p>
+            </div>
+        </div>
+        <div class="header-controls">
+            <button id="userSettingsBtn" class="btn-outline">
+                <i class="fa-regular fa-user"></i> <span id="headerClassName">未設定</span>
+            </button>
+            <button id="adminLoginBtn" class="btn-outline">
+                <i class="fa-solid fa-cog"></i> 管理者
+            </button>
+        </div>
+    </header>
+
+    <main id="mainContainer">
+        
+        <div id="view-dashboard" class="view-section active">
+            <div class="grid-container">
+                <div class="card card-clock">
+                    <div class="card-header-sm"><i class="fa-regular fa-clock"></i> 現在時刻</div>
+                    <div class="clock-display" id="clockTime">--:--:--</div>
+                    <div class="date-display" id="clockDate">----年--月--日 (--)</div>
+                </div>
+
+                <div class="card card-next-class">
+                    <div class="card-header-sm"><i class="fa-solid fa-book-open"></i> 次の授業</div>
+                    <div class="next-class-content" id="nextClassDisplay">読み込み中...</div>
+                </div>
+
+                <div class="card card-schedule">
+                    <div class="card-header-row">
+                        <div class="card-header-sm"><i class="fa-regular fa-calendar"></i> 今日の時間割</div>
+                        <span class="badge" id="scheduleDayBadge">--</span>
+                    </div>
+                    <div class="schedule-list" id="scheduleList"></div>
+                </div>
+
+                <div class="card card-test">
+                    <div class="card-header-sm"><i class="fa-solid fa-bullseye"></i> 次のテストまで</div>
+                    <div class="test-countdown" id="testCountdownDisplay">--</div>
+                </div>
+
+                <div class="card card-todo">
+                    <div class="card-header-row">
+                        <div class="card-header-sm"><i class="fa-solid fa-list-check"></i> ToDoリスト</div>
+                        <span class="todo-progress" id="todoProgress">0/0 完了</span>
+                    </div>
+                    <div class="progress-bar-bg"><div class="progress-bar-fill" id="todoProgressBar"></div></div>
+                    <div class="todo-input-area">
+                        <input type="text" id="newTodoInput" placeholder="タスクを追加...">
+                        <button id="addTodoBtn"><i class="fa-solid fa-plus"></i></button>
+                    </div>
+                    <ul class="todo-list" id="todoList"></ul>
+                </div>
+
+                <div class="card card-personal">
+                    <div class="card-header-row">
+                        <div class="card-header-sm"><i class="fa-brands fa-google"></i> Googleカレンダー</div>
+                        <button id="gcalAuthBtnSmall" class="btn-xs-google" style="display:none;">ログイン</button>
+                    </div>
+                    <div id="personalScheduleContent" class="personal-schedule-content">
+                        <p class="text-muted" id="gcalStatusMsg">Googleアカウントと連携していません</p>
+                        <ul class="gcal-list" id="gcalList"></ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="view-settings" class="view-section">
+            <div class="back-link" onclick="app.navigate('dashboard')">
+                <i class="fa-solid fa-arrow-left"></i> 戻る
+            </div>
+            <h2>個人設定</h2>
+
+            <div class="card settings-card">
+                <div class="form-group">
+                    <label class="form-label">クラス選択</label>
+                    <select id="userClassSelect" class="form-control">
+                        <option value="">選択してください</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="card settings-card">
+                <div class="form-group">
+                    <label class="form-label"><i class="fa-brands fa-google"></i> Googleカレンダー連携</label>
+                    <p class="form-desc">個人の予定を表示するにはログインしてください。</p>
+                    
+                    <div id="gcalAuthContainer">
+                        <button id="gcalLoginBtn" class="btn-google">
+                            <i class="fa-brands fa-google"></i> Googleでログイン
+                        </button>
+                        <button id="gcalLogoutBtn" class="btn-outline" style="display:none;">
+                            ログアウト
+                        </button>
+                    </div>
+                    <p id="gcalAuthStatus" class="status-text">未接続</p>
+                </div>
+            </div>
+
+            <button id="saveUserSettingsBtn" class="btn-primary-block">設定を保存</button>
+        </div>
+
+        <div id="view-admin-login" class="view-section">
+            <div class="back-link" onclick="app.navigate('dashboard')"><i class="fa-solid fa-arrow-left"></i> 戻る</div>
+            <div class="login-card">
+                <h2>管理者ログイン</h2>
+                <input type="password" id="adminPinInput" placeholder="PIN: 1234" maxlength="4">
+                <button id="adminLoginSubmit" class="btn-primary-block">ログイン</button>
+            </div>
+        </div>
+
+        <div id="view-admin" class="view-section">
+            <div class="back-link" onclick="app.navigate('dashboard')"><i class="fa-solid fa-arrow-left"></i> 戻る</div>
+            <div class="settings-header">
+                <div class="logo-icon admin-color"><i class="fa-solid fa-shield-halved"></i></div>
+                <div><h2>管理者設定</h2><p>GitHub連携設定</p></div>
+            </div>
+
+            <div class="admin-tabs">
+                <button class="tab-btn active" data-tab="time">時限</button>
+                <button class="tab-btn" data-tab="schedule">時間割</button>
+                <button class="tab-btn" data-tab="test">テスト</button>
+                <button class="tab-btn" data-tab="system">システム</button>
+            </div>
+
+            <div id="tab-time" class="tab-content active">
+                <div class="card">
+                    <h3>時限設定</h3>
+                    <div id="adminTimeSettingsList"></div>
+                </div>
+            </div>
+            <div id="tab-schedule" class="tab-content">
+                <div class="card">
+                    <select id="adminScheduleClassSelect" class="form-control"></select>
+                    <div id="adminScheduleEditor" class="schedule-editor-grid"></div>
+                </div>
+            </div>
+            <div id="tab-test" class="tab-content">
+                <div class="card">
+                    <h3>定期テスト</h3>
+                    <div id="adminTestList"></div>
+                    <button class="btn-outline-sm" id="adminAddTestBtn">+ 追加</button>
+                </div>
+            </div>
+            <div id="tab-system" class="tab-content">
+                <div class="card">
+                    <h3>GitHub データ保存設定</h3>
+                    <div class="form-group"><label>Username</label><input type="text" id="ghOwner" class="form-control"></div>
+                    <div class="form-group"><label>Repo Name</label><input type="text" id="ghRepo" class="form-control"></div>
+                    <div class="form-group"><label>File Path</label><input type="text" id="ghPath" class="form-control" value="data.json"></div>
+                    <div class="form-group"><label>Token</label><input type="password" id="ghToken" class="form-control"></div>
+                </div>
+            </div>
+            <div class="admin-actions">
+                <button id="saveAdminDataBtn" class="btn-primary-block admin-save-btn">GitHubに保存</button>
+            </div>
+        </div>
+
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

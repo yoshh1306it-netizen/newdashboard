@@ -1,0 +1,94 @@
+/* 基本スタイルは前回と同じ、以下を追加・変更 */
+
+:root {
+    --primary-color: #6C5CE7;
+    --primary-light: #A29BFE;
+    --bg-color: #F4F6F9;
+    --card-bg: #FFFFFF;
+    --text-main: #2D3436;
+    --text-muted: #636E72;
+    --radius: 16px;
+}
+
+/* ... (前回の共通スタイルは維持) ... */
+* { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Noto Sans JP', sans-serif; }
+body { background-color: var(--bg-color); color: var(--text-main); min-height: 100vh; }
+.app-header { display: flex; justify-content: space-between; align-items: center; padding: 1rem 2rem; background: var(--card-bg); box-shadow: 0 2px 10px rgba(0,0,0,0.03); }
+.logo-area { display: flex; align-items: center; gap: 1rem; }
+.logo-icon { width: 40px; height: 40px; background: var(--primary-color); color: white; border-radius: 10px; display: flex; align-items: center; justify-content: center; }
+.header-controls { display: flex; gap: 0.5rem; }
+.btn-outline { border: 1px solid #dfe6e9; background: white; padding: 0.5rem 1rem; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+.btn-primary-block { width: 100%; padding: 1rem; background: var(--primary-color); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 1rem; }
+.view-section { display: none; }
+.view-section.active { display: block; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+/* Grid & Card Layout */
+#mainContainer { max-width: 1200px; margin: 2rem auto; padding: 0 1rem; }
+.grid-container { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+@media (min-width: 900px) {
+    .grid-container {
+        grid-template-columns: 1fr 1.5fr;
+        grid-template-areas: "clock next" "sched test" "todo personal";
+    }
+    .card-clock { grid-area: clock; }
+    .card-next-class { grid-area: next; }
+    .card-schedule { grid-area: sched; }
+    .card-test { grid-area: test; }
+    .card-todo { grid-area: todo; }
+    .card-personal { grid-area: personal; }
+}
+
+.card { background: var(--card-bg); border-radius: var(--radius); padding: 1.5rem; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.card-header-sm { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+.card-header-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+
+/* Dashboard Content Styles */
+.clock-display { font-size: 3.5rem; font-weight: 700; line-height: 1; margin: 0.5rem 0; font-variant-numeric: tabular-nums; }
+.card-clock { background: linear-gradient(135deg, #6C5CE7, #a363d9); color: white; }
+.card-clock .card-header-sm { color: rgba(255,255,255,0.8); }
+
+.card-test { background: linear-gradient(135deg, #FF7675, #E17055); color: white; }
+.card-test .card-header-sm { color: rgba(255,255,255,0.9); }
+.test-countdown { font-size: 1.2rem; font-weight: bold; margin-top: 1rem; }
+
+.schedule-item { display: flex; justify-content: space-between; padding: 0.5rem 0; border-bottom: 1px solid #f1f2f6; }
+.period-num { font-weight: bold; color: var(--primary-color); width: 30px; }
+
+/* ToDo */
+.progress-bar-bg { width: 100%; height: 6px; background: #dfe6e9; border-radius: 3px; margin-bottom: 1rem; }
+.progress-bar-fill { height: 100%; background: var(--primary-color); width: 0%; border-radius: 3px; transition: width 0.3s; }
+.todo-input-area { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.todo-input-area input { flex: 1; padding: 0.5rem; border: 1px solid #dfe6e9; border-radius: 6px; }
+.todo-list { list-style: none; }
+.todo-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0; }
+.todo-item.completed span { text-decoration: line-through; color: #b2bec3; }
+
+/* Google Calendar Styles */
+.btn-google {
+    background: #4285F4; color: white; border: none; padding: 0.8rem 1.5rem; border-radius: 8px;
+    font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 0.5rem; margin: 0 auto;
+}
+.btn-google:hover { background: #357ae8; }
+.btn-xs-google { font-size: 0.8rem; padding: 0.2rem 0.6rem; background: #4285F4; color: white; border: none; border-radius: 4px; cursor: pointer; }
+.gcal-list { list-style: none; margin-top: 0.5rem; }
+.gcal-item {
+    background: #f8f9fa; border-left: 4px solid #4285F4; padding: 0.5rem; margin-bottom: 0.5rem; border-radius: 4px;
+}
+.gcal-time { font-size: 0.8rem; color: var(--text-muted); font-weight: bold; display: block; }
+.gcal-summary { font-size: 0.95rem; }
+.status-text { text-align: center; margin-top: 0.5rem; font-size: 0.9rem; color: var(--text-muted); }
+
+/* Forms & Admin */
+.form-group { margin-bottom: 1.5rem; }
+.form-label { display: block; font-weight: bold; margin-bottom: 0.3rem; }
+.form-control { width: 100%; padding: 0.8rem; border: 1px solid #dfe6e9; border-radius: 8px; font-size: 1rem; }
+.admin-tabs { display: flex; gap: 1rem; margin-bottom: 1.5rem; border-bottom: 2px solid #dfe6e9; }
+.tab-btn { background: none; border: none; padding: 0.5rem 1rem; cursor: pointer; color: var(--text-muted); }
+.tab-btn.active { color: var(--primary-color); border-bottom: 3px solid var(--primary-color); }
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+.schedule-editor-grid { display: grid; grid-template-columns: 80px repeat(5, 1fr); gap: 0.5rem; overflow-x: auto; }
+.sched-edit-cell input { width: 100%; padding: 0.3rem; border: 1px solid #ddd; }
+.login-card { max-width: 400px; margin: 4rem auto; text-align: center; padding: 2rem; background: white; border-radius: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+.login-card input { text-align: center; letter-spacing: 0.5rem; font-size: 1.5rem; }
